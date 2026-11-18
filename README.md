@@ -1,57 +1,81 @@
 # 🐾 Modelado Predictivo y Enriquecimiento Biológico en Adopción de Mascotas
 
-**Autor:** Diego Videla Silva
+**Autor:** Diego Videla Silva  
+**Comisión:** 96160  
+**Curso:** Data Science II - Machine Learning para la Ciencia de Datos (Coderhouse)  
+**Entrega:** Entrega Final (ETL, Enriquecimiento vía API, EDA, Machine Learning y SHAP)
 
-**Comisión:** 96160
-
-**Curso:** Data Science II - Machine Learning para la Ciencia de Datos (Coderhouse)
-
-**Entrega:** Primera Entrega (ETL, Enriquecimiento vía API y Análisis Exploratorio)
+**📄 Informe Final:** [EntregaFinal_Videla_AdopcionMascotas_Documentado.pdf](Documentos/EntregaFinal/EntregaFinal_Videla_AdopcionMascotas_Documentado.pdf)
 
 ## 📌 Descripción del Proyecto
 
-La sobrepoblación en refugios y centros de rescate animal es un desafío logístico y de bienestar crítico. Este proyecto busca identificar los predictores biológicos y visuales de la velocidad de adopción de mascotas para optimizar las estrategias de rescate, gestionar el inventario y enfocar el presupuesto de marketing de manera eficiente.
+La sobrepoblación en refugios y centros de rescate animal es un desafío logístico y de bienestar crítico. Este proyecto combina un registro transaccional de mascotas en adopción (Kaggle, 14.993 registros) con datos biológicos reales obtenidos mediante APIs externas (*The Dog API* & *The Cat API*).
 
-Para lograrlo, se toma un registro transaccional de un refugio (obtenido de Kaggle) y se enriquece consumiendo bases de datos genéticas internacionales (*The Dog API* & *The Cat API*).
+El objetivo principal es resolver un problema de **Clasificación Binaria**: predecir al momento del ingreso qué mascotas corren **riesgo de estancamiento** (más de 100 días en el refugio o no adoptadas) para que la organización pueda asignar presupuesto de marketing y fotografía de forma proactiva.
 
 ## 🗂️ Estructura del Repositorio
-
-El proyecto mantiene la siguiente estructura para facilitar su revisión:
 
 ```text
 📁 coderhouse_DC2_1
 │
-├── 📁 .vscode/                              # Configuraciones del editor
-├── 📁 dataset/                              # Datasets originales y caché (Kaggle y APIs)
+├── 📁 dataset/                              # Datasets originales y caché local de las APIs
+│   ├── AdopcionMascotas.csv
+│   ├── BreedLabels.csv
+│   └── biologia_api_cache.csv
 ├── 📁 Documentos/                           # Entregables formales
-│   ├── Entrega1_Videla_AdopcionMascotas_Documentado.pdf                  # Informe Ejecutivo
-│   └── Entrega1_Videla_AdopcionMascotas_Documentado_Presentacion.pdf     # Presentación de Slides
-├── 📁 venv/                                 # Entorno virtual de Python
+│   ├── 📁 EntregaFinal/                     # Informe de la entrega final
+│   │   └── EntregaFinal_Videla_AdopcionMascotas_Documentado.pdf
+│   └── 📁 PrimeraEntrega/                   # Entregables de la primera entrega
+│       ├── Entrega1_Videla_AdopcionMascotas_Documentado.pdf
+│       └── Entrega1_Videla_AdopcionMascotas_Documentado_Presentacion.pdf
 │
-├── .env                                     # Credenciales locales (ignorado en el repo)
-├── .env.template                            # Plantilla de referencia para las API Keys
-├── .gitignore                               # Configuración de exclusiones de Git
+├── .env.template                            # Plantilla de referencia para API Keys
+├── .gitignore                               # Exclusiones de Git (ignora .env y entorno virtual)
 ├── Diccionario API.png                      # Respaldo visual del diccionario de la API
 ├── Diccionario Columnas.png                 # Respaldo visual del diccionario del dataset base
-├── Entrega1_Videla_AdopcionMascotas.ipynb   # Jupyter Notebook con el código fuente (ETL y EDA)
+├── Entrega1_Videla_AdopcionMascotas.ipynb   # Notebook principal (ETL, EDA, ML y SHAP)
+├── requirements.txt                         # Dependencias del proyecto
 └── README.md                                # Documentación principal del repositorio
 ```
 
 ## 🛠️ Tecnologías y Metodología Implementada
 
-* **Lenguaje:** Python 3
-* **Librerías:** `pandas`, `requests`, `matplotlib`, `seaborn`, `difflib`, `python-dotenv`.
-* **Metodología:**
-  1. **Ingesta y ETL:** Carga de datos locales y consumo de APIs REST.
-  2. **Data Wrangling & IA:** Limpieza sintáctica y semántica usando *Fuzzy String Matching* (`difflib`) validado mediante inteligencia artificial (LLM) bajo criterios clínicos veterinarios.
-  3. **Arquitectura:** Bifurcación en Data Marts (`df_final_full` y `df_final_razas`) para asegurar el rigor estadístico al separar animales mestizos de razas puras.
-  4. **EDA (Exploratory Data Analysis):** Comprobación de 4 hipótesis de negocio orientadas a la logística del refugio.
+- **Lenguaje:** Python 3
+- **Librerías:** `pandas`, `numpy`, `requests`, `python-dotenv`, `matplotlib`, `seaborn`, `plotly`, `scikit-learn`, `xgboost`, `shap`, `difflib`.
+- **Pipeline de Datos y Machine Learning:**
+  1. **Ingesta y ETL:** Carga de datos transaccionales y consumo de APIs REST con mecanismo de caché local.
+  2. **Limpieza Semántica con IA:** Resolución de discrepancias de razas mediante *Fuzzy String Matching* (`difflib`) auditado con un LLM bajo criterios clínicos veterinarios.
+  3. **EDA y Visualización Interactiva:** Validación de 4 hipótesis de negocio, incluyendo segmentación por especie (perro vs. gato) con gráficos interactivos en `Plotly`.
+  4. **Ingeniería de Atributos:** Creación de variables de negocio (`es_ventana_dorada`, `es_raza_pura`, `desc_len`, `salud_completa`, `es_gratis`), imputación biológica por especie y preprocesamiento encapsulado en `ColumnTransformer` + `Pipeline`.
+  5. **Modelado y Validación Cruzada:** Comparación de 3 arquitecturas (Regresión Logística, Random Forest y XGBoost) con `StratifiedKFold` (5-Fold) y balanceo de clases.
+  6. **Optimización y Explicabilidad:** Ajuste de hiperparámetros con `RandomizedSearchCV` e interpretabilidad global del modelo ganador mediante valores **SHAP**.
+
+## 🏆 Resultados del Modelo Final
+
+El modelo seleccionado fue **Random Forest Optimizado**, evaluado sobre el conjunto de testeo (`20%` no visto):
+- **ROC-AUC:** `0.7617`
+- **Accuracy:** `72.76%`
+- **F1-Score (Clase Riesgo):** `0.5469` | **Recall (Clase Riesgo):** `58.69%`
+
+El análisis **SHAP** confirmó que la edad al ingreso (`Age`, `es_ventana_dorada`), la pureza racial enriquecida vía API (`es_raza_pura`), la calidad del perfil (`PhotoAmt`, `desc_len`) y las publicaciones grupales (`Quantity`) son los principales impulsores del riesgo de estancamiento.
 
 ## 🚀 Instrucciones para Evaluadores (Ejecución del Código)
 
-Este Jupyter Notebook ha sido diseñado para ser **100% reproducible** sin necesidad de configurar variables de entorno (como se ve en el `.env.template`) ni gestionar credenciales privadas de la API.
+Este Notebook ha sido diseñado para ser **100% reproducible** sin necesidad de configurar credenciales privadas de API.
 
-**Mecanismo de Caché Local:**
-Al ejecutar el bloque de *Conexión a API* en el Notebook (`Entrega1_Videla_AdopcionMascotas.ipynb`), el código detectará automáticamente la existencia del archivo de caché dentro de la carpeta `dataset/`. Al encontrarlo, omitirá la petición HTTP a las APIs de perros y gatos, y cargará la tabla maestra biológica directamente desde el disco local.
+**Mecanismo de Caché Local:**  
+Al ejecutar el bloque de *Conexión a API*, el código detectará automáticamente `dataset/biologia_api_cache.csv`, omitirá las peticiones HTTP a *The Dog/Cat API* y cargará los datos biológicos directamente desde el disco local.
 
-Para evaluar, simplemente abra el archivo `.ipynb` y ejecute todas las celdas en orden.
+**Instalación de dependencias:**
+
+```bash
+python -m venv venv
+source venv/bin/activate      # En Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+> **Nota macOS:** `xgboost` requiere OpenMP. Si al importarlo aparece un error de `libomp.dylib`, instalar el runtime con `brew install libomp`.
+
+Para evaluar, abra el archivo `.ipynb` y ejecute todas las celdas en orden.
+
+> **Tiempo de ejecución:** la ejecución completa tarda aproximadamente **5 minutos**, debido a la validación cruzada y a la búsqueda de hiperparámetros (`RandomizedSearchCV`) de los modelos de Machine Learning.

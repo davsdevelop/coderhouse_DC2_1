@@ -1,0 +1,33 @@
+# ============================================================
+# Entrega 1 - Adopción de Mascotas (Data Science II)
+# Entorno verificado con Python 3.14
+#
+# Instalación:
+#   python -m venv venv
+#   source venv/bin/activate      # macOS / Linux
+#   pip install -r requirements.txt
+# ============================================================
+
+# Manipulación de datos
+pandas==3.1.1
+numpy==2.5.4
+
+# Consumo de APIs y variables de entorno
+requests==2.34.2
+python-dotenv==1.2.4
+
+# Visualización
+matplotlib==3.11.2
+seaborn==0.13.2
+plotly==7.1.0
+
+# Machine Learning
+scikit-learn==1.9.1
+xgboost==3.4.1
+shap==0.54.1
+# Nota macOS: xgboost requiere OpenMP. Si falla al importar, ejecutar:
+#   brew install libomp
+
+# Notebook / kernel de Jupyter
+ipykernel==7.4.0
+ipywidgets==8.1.9
